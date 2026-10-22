@@ -1,4 +1,4 @@
-﻿# ---------- Stage 1: build frontend ----------
+# ---------- Stage 1: build frontend ----------
 FROM node:22-slim AS frontend
 WORKDIR /app/frontend
 COPY frontend/package*.json ./

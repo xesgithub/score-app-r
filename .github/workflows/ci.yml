@@ -1,12 +1,10 @@
 name: CI
 
-# ตรวจโค้ดทุก push และ PR เข้า main — build/typecheck ทั้ง frontend + backend
-# ไม่ deploy (การ deploy อยู่ใน deploy.yml แยกต่างหาก)
+# ตรวจโค้ด (build/typecheck ทั้ง frontend + backend)
+# ปรับเป็น manual อย่างเดียว (workflow_dispatch) ระหว่างย้าย Azure -> AWS เพื่อไม่ให้รันอัตโนมัติทุก push/PR (ประหยัด Actions minutes)
+# เปิด auto (push/pull_request) อีกครั้งได้เมื่อระบบนิ่งและมี CD (AWS) พร้อม
+# ไม่ deploy (การ deploy จะอยู่ใน workflow CD สำหรับ AWS แยกต่างหาก)
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 
 jobs:

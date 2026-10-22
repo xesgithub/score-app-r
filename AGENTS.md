@@ -1,4 +1,4 @@
-﻿# AGENTS.md — คู่มือสำหรับ AI agent ที่ทำงานกับ repo นี้
+# AGENTS.md — คู่มือสำหรับ AI agent ที่ทำงานกับ repo นี้
 
 > อ่านไฟล์นี้ก่อนเริ่มงาน เพื่อทำตาม convention เดียวกันเวลาผู้ใช้สั่งสั้น ๆ
 
@@ -19,7 +19,7 @@ score-app — ระบบให้คะแนนการแข่งขัน
 5. Verify: `https://<fqdn>/api/version` ต้องขึ้นเวอร์ชันใหม่
 
 ## CI/CD (ดู `docs/07-dev-workflow.md`)
-- **CI** (`.github/workflows/ci.yml`): รันทุก push/PR — build/typecheck. **push โค้ดปกติไม่ deploy**
+- **CI** (`.github/workflows/ci.yml`): ปรับเป็น **manual เท่านั้น** (`workflow_dispatch`) ระหว่างย้าย Azure → AWS เพื่อประหยัด Actions minutes — build/typecheck. กดรันเองจาก Actions. เปิด auto (push/PR) อีกครั้งได้เมื่อระบบนิ่ง
 - **CD** (AWS, `deploy-aws.yml` — จะสร้างในเฟส implement): รันเมื่อ **push tag `v*`** หรือกด Run เอง — build image + push ECR + `cdk deploy` + smoke test
 - CI/CD **แยกกัน** (ผู้ใช้ต้องการแบบนี้) — CD ไม่รอ CI
 

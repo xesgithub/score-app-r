@@ -1,4 +1,4 @@
-﻿# Dev & Release Workflow — score-app
+# Dev & Release Workflow — score-app
 
 > เอกสารนี้บันทึก **ขั้นตอนการทำงานมาตรฐาน** ตั้งแต่แก้โค้ด → ออก release → deploy
 > ใช้อ้างอิงเวลาสั่งงาน (คน หรือ AI agent) จะได้ทำตามแบบแผนเดียวกัน
@@ -9,7 +9,7 @@
 
 | Workflow | ไฟล์ | Trigger | ทำอะไร |
 |----------|------|---------|--------|
-| **CI** | `.github/workflows/ci.yml` | ทุก push/PR เข้า `main` | build + typecheck (frontend + backend) + `prisma validate` |
+| **CI** | `.github/workflows/ci.yml` | **manual เท่านั้น** (`workflow_dispatch`) — ชั่วคราวระหว่างย้าย AWS | build + typecheck (frontend + backend) + `prisma validate` |
 | **CD** (AWS, จะสร้าง) | `.github/workflows/deploy-aws.yml` | push tag `v*` **หรือ** กด Run workflow เอง | build image → push **ECR** → `cdk deploy` → smoke test |
 
 **หลักการสำคัญ:**
@@ -22,16 +22,17 @@
 
 | การกระทำ | CI | CD (deploy) |
 |-----------|----|-----|
-| `git push` เข้า main | ✅ รัน | ❌ ไม่รัน |
-| เปิด PR เข้า main | ✅ รัน | ❌ ไม่รัน |
+| `git push` เข้า main | ⏸️ ไม่รัน (manual) | ❌ ไม่รัน |
+| เปิด PR เข้า main | ⏸️ ไม่รัน (manual) | ❌ ไม่รัน |
 | `git tag vX.Y.Z && git push --tags` | ❌ | ✅ deploy image `vX.Y.Z` (เมื่อ pipeline AWS พร้อม) |
+| กด "Run workflow" (Actions → CI) | ✅ build/typecheck | ❌ |
 | กด "Run workflow" (Actions → CD) | ❌ | ✅ deploy image `manual-<run#>` (เมื่อ pipeline AWS พร้อม) |
 
 ## 3. ขั้นตอนแก้โค้ดปกติ (ไม่ release)
 ```bash
 git add <files>
 git commit -m "feat: ..."   # ใช้ Conventional Commits (ดู README)
-git push                     # → CI รันอัตโนมัติ (build/typecheck)
+git push                     # CI เป็น manual แล้ว — กด Run workflow (Actions → CI) เองถ้าต้องการตรวจ
 ```
 
 ## 4. ขั้นตอนออก Release + Deploy (ทำเมื่อพร้อม deploy จริง)

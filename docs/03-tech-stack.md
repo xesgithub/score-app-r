@@ -1,4 +1,4 @@
-﻿# Tech Stack & Project Structure — โปรแกรมให้คะแนนการแข่งขัน (score-app)
+# Tech Stack & Project Structure — โปรแกรมให้คะแนนการแข่งขัน (score-app)
 
 > เอกสารฉบับร่าง v0.1 — 2026-09-29 (อัปเดตส่วน deploy: ย้าย Azure → AWS)
 > เป้าหมายหลัก: **ฟรี (open-source, ไม่มีค่า license)** และ **ย้ายง่าย (portable, ไม่ล็อก vendor)**

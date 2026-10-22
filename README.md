@@ -1,4 +1,4 @@
-﻿# 🏆 score-app (ชื่อชั่วคราว)
+# 🏆 score-app (ชื่อชั่วคราว)
 
 ![version](https://img.shields.io/badge/version-0.6.0-blue)
 ![frontend](https://img.shields.io/badge/frontend-React%20%2B%20TS%20%2B%20Vite-61DAFB)
