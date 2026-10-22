@@ -1,6 +1,6 @@
-# Tech Stack & Project Structure — โปรแกรมให้คะแนนการแข่งขัน (score-app)
+﻿# Tech Stack & Project Structure — โปรแกรมให้คะแนนการแข่งขัน (score-app)
 
-> เอกสารฉบับร่าง v0.1 — 2026-09-29
+> เอกสารฉบับร่าง v0.1 — 2026-09-29 (อัปเดตส่วน deploy: ย้าย Azure → AWS)
 > เป้าหมายหลัก: **ฟรี (open-source, ไม่มีค่า license)** และ **ย้ายง่าย (portable, ไม่ล็อก vendor)**
 
 ## 1. 🎯 หลักการเลือกเทคโนโลยี
@@ -26,25 +26,27 @@
 
 > ทางเลือกที่เบากว่านี้ถ้าต้องการเรียบง่ายสุด: ใช้ **SQLite** ไฟล์เดียว + backend เสิร์ฟ static frontend ในโปรเซสเดียว → ได้ไฟล์รันเดียวจบ ย้ายแค่ก๊อปโฟลเดอร์
 
-## 3. 🚀 การ Deploy (จริง: Azure Container Apps)
+## 3. 🚀 การ Deploy (เป้าหมาย: AWS — ECS Fargate + EFS)
 
-> รายละเอียดครบใน [`05-deployment.md`](05-deployment.md)
+> รายละเอียดครบใน [`10-aws-architecture.md`](10-aws-architecture.md) · เชิงนโยบาย/แผนย้ายใน [`08-aws-migration-proposal.md`](08-aws-migration-proposal.md)
+> สถานะ: อยู่ระหว่างย้ายจาก Azure → AWS (ยังไม่ลงมือ implement IaC)
 
-Deploy จริงบน **Azure Container Apps (ACA)**:
+Deploy ปลายทางบน **AWS ECS Fargate**:
 - แพ็กเป็น **Docker image เดียว** (backend เสิร์ฟทั้ง API + frontend static)
-- Image build/เก็บบน **Azure Container Registry (ACR)**
-- ข้อมูล **SQLite บน Azure Files** (mount `/data` ด้วย option `nobrl`) → ข้อมูลถาวรแม้ scale-to-zero
-- **scale-to-zero** (minReplicas=0) ประหยัดค่าใช้จ่าย; **maxReplicas=1** (ข้อจำกัดของ SQLite+Azure Files)
-- HTTPS + FQDN อัตโนมัติจาก ACA
+- Image build/เก็บบน **ECR** (Elastic Container Registry)
+- ข้อมูล **SQLite บน EFS/EBS** (mount `/data`) → ข้อมูลถาวรแม้ scale-to-zero
+- **scale-to-zero** (0 task เมื่อไม่มีงาน) ประหยัดค่าใช้จ่าย; **1 task เท่านั้น** (ข้อจำกัดของ SQLite ตัวเขียนเดียว)
+- HTTPS + โดเมนคงที่ผ่าน **CloudFront + ACM** (แนะนำ — ดู `10` §4.2)
+- IaC = **AWS CDK (TypeScript)** ใน `deploy/aws/` · CI/CD auth = **OIDC**
 
 **เหมาะกับ use case จริง** (กรรมการ+admin < 10, ทีม ≤ 20 — โหลดต่ำ) SQLite เพียงพอ
 
-> **หมายเหตุ:** แผนเดิมเคยพิจารณา Fly.io แต่เปลี่ยนมาใช้ Azure เพราะมี subscription (VS Enterprise) พร้อมใช้อยู่แล้ว
-> โครงสร้างยังคง portable (Docker + Prisma) — ย้ายไป cloud อื่นหรือ PostgreSQL ได้โดยแก้เล็กน้อย
+> **หมายเหตุประวัติ:** ระบบเคยรันบน **Azure Container Apps** (ACR + Azure Files) ก่อนย้ายมา AWS ตามนโยบายองค์กร
+> โครงสร้างยังคง portable (Docker + Prisma) — ย้าย cloud หรือ PostgreSQL ได้โดยแก้เล็กน้อย
 
 **ทางเลือกอื่นที่ยังทำได้ (portable):**
 - Self-host / โน้ตบุ๊กในงาน — `docker build` + `docker run` ให้กรรมการต่อ WiFi วงเดียวกัน
-- ย้าย DB ไป PostgreSQL (ถ้าโหลดสูง/ต้องหลาย replica) — เปลี่ยน provider ใน Prisma
+- ย้าย DB ไป PostgreSQL/RDS (ถ้าโหลดสูง/ต้องหลาย replica) — เปลี่ยน provider ใน Prisma
 
 ## 4. 📁 โครงสร้างโปรเจกต์ (จริง)
 
@@ -55,7 +57,9 @@ score-app/
 │  ├─ 02-design.md
 │  ├─ 03-tech-stack.md
 │  ├─ 04-live-workflow.md     # แผนอนาคต (ยังไม่ทำ)
-│  └─ 05-deployment.md        # สถาปัตยกรรม deploy บน Azure
+│  ├─ 08-aws-migration-proposal.md   # แผนย้ายไป AWS
+│  ├─ 10-aws-architecture.md         # สถาปัตยกรรม AWS (ECS Fargate + EFS)
+│  └─ 11-aws-cost-inputs.md          # ข้อมูล cost สำหรับ Presale
 ├─ backend/
 │  ├─ src/
 │  │  ├─ index.ts             # entry: Express + เสิร์ฟ frontend static + /api/health,/api/version
@@ -91,7 +95,7 @@ score-app/
 └─ README.md
 ```
 
-> หมายเหตุ: ไม่มี `docker-compose.yml` — deploy เป็น Docker image เดียวบน ACA (backend เสิร์ฟ frontend static)
+> หมายเหตุ: ไม่มี `docker-compose.yml` — deploy เป็น Docker image เดียวบน ECS Fargate (backend เสิร์ฟ frontend static)
 
 ## 5. 🔧 ตัวแปรสภาพแวดล้อม (.env.example)
 

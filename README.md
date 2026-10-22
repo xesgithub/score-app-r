@@ -1,14 +1,16 @@
-# 🏆 score-app (ชื่อชั่วคราว)
+﻿# 🏆 score-app (ชื่อชั่วคราว)
 
 ![version](https://img.shields.io/badge/version-0.6.0-blue)
 ![frontend](https://img.shields.io/badge/frontend-React%20%2B%20TS%20%2B%20Vite-61DAFB)
 ![backend](https://img.shields.io/badge/backend-Node%20%2B%20Express%20%2B%20Prisma-3178C6)
 ![db](https://img.shields.io/badge/db-SQLite-003B57)
-![deploy](https://img.shields.io/badge/deploy-Azure%20Container%20Apps-0078D4)
+![deploy](https://img.shields.io/badge/deploy-AWS%20ECS%20Fargate-FF9900)
 
 ระบบเว็บสำหรับ **ให้คะแนนการแข่งขัน** — กรรมการหลายคนให้คะแนนแยกกัน (มองไม่เห็นกัน) แล้วระบบรวมคะแนนถ่วงน้ำหนักและจัดอันดับ
 
 > เวอร์ชันปัจจุบัน: **v0.6.0** — เพิ่มเครื่องมือทดสอบ (สร้าง/ลบ กรรมการและทีมจำนวนมากเร็ว ๆ)
+>
+> ☁️ **หมายเหตุ:** ระบบกำลังย้ายจาก Azure → **AWS** (ECS Fargate + EFS) — ดู `docs/08`, `docs/10`, `docs/11`
 
 ## 📑 สารบัญ
 
@@ -26,7 +28,6 @@
 - [`docs/02-design.md`](docs/02-design.md) — 🗂️ data model, สูตรคะแนน, API
 - [`docs/03-tech-stack.md`](docs/03-tech-stack.md) — 🧰 เทคโนโลยี + deploy
 - [`docs/04-live-workflow.md`](docs/04-live-workflow.md) — 🗺️ workflow present สด (แผนอนาคต)
-- [`docs/05-deployment.md`](docs/05-deployment.md) — 🚀 deploy บน Azure Container Apps (resource, redeploy, ข้อจำกัด)
 - [`docs/06-design-log-and-scorelock.md`](docs/06-design-log-and-scorelock.md) — 📜 ดีไซน์ Activity Log + ระบบล็อกคะแนน (รายทีม/ทั้งชุด)
 - [`docs/07-dev-workflow.md`](docs/07-dev-workflow.md) — 🔄 ขั้นตอน dev → release → deploy + CI/CD
 - [`docs/08-aws-migration-proposal.md`](docs/08-aws-migration-proposal.md) — ☁️ ข้อเสนอย้ายไป AWS (เชิงนโยบาย + แผน UAT/cut-over)
@@ -103,7 +104,7 @@ git push                # ส่งขึ้น GitHub
 | `docs:` | แก้เอกสารอย่างเดียว | `docs: อัปเดตวิธีติดตั้ง` |
 | `chore:` | งานจิปาถะ (bump version, ลง deps) | `chore: bump 0.3.0` |
 | `refactor:` | ปรับโค้ดโดยพฤติกรรมเหมือนเดิม | `refactor: แยก service คำนวณคะแนน` |
-| `deploy:` | งานเกี่ยวกับ deploy | `deploy: ปรับ resource ACA` |
+| `deploy:` | งานเกี่ยวกับ deploy | `deploy: ปรับ resource ECS Fargate` |
 
 ### ⚠️ ไฟล์ที่ห้าม commit
 ถูกกันไว้ใน `.gitignore` แล้ว — **อย่านำออก**:

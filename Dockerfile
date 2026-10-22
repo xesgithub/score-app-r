@@ -1,4 +1,4 @@
-# ---------- Stage 1: build frontend ----------
+﻿# ---------- Stage 1: build frontend ----------
 FROM node:22-slim AS frontend
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
@@ -32,7 +32,7 @@ COPY backend/prisma ./prisma
 # frontend build -> เสิร์ฟจาก ./public
 COPY --from=frontend /app/frontend/dist ./public
 
-# ข้อมูล SQLite เก็บบน Azure Files ที่ mount ไว้ /data (mount option nobrl) — ถาวรแม้ scale-to-zero
+# ข้อมูล SQLite เก็บบน persistent volume ที่ mount ไว้ /data (AWS: EFS/EBS) — ถาวรแม้ scale-to-zero
 ENV DATABASE_URL="file:/data/prod.db"
 ENV PORT=8080
 ENV NODE_ENV=production
