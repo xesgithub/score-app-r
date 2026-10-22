@@ -29,6 +29,10 @@
 - [`docs/05-deployment.md`](docs/05-deployment.md) — 🚀 deploy บน Azure Container Apps (resource, redeploy, ข้อจำกัด)
 - [`docs/06-design-log-and-scorelock.md`](docs/06-design-log-and-scorelock.md) — 📜 ดีไซน์ Activity Log + ระบบล็อกคะแนน (รายทีม/ทั้งชุด)
 - [`docs/07-dev-workflow.md`](docs/07-dev-workflow.md) — 🔄 ขั้นตอน dev → release → deploy + CI/CD
+- [`docs/08-aws-migration-proposal.md`](docs/08-aws-migration-proposal.md) — ☁️ ข้อเสนอย้ายไป AWS (เชิงนโยบาย + แผน UAT/cut-over)
+- [`docs/09-next-phase-security.md`](docs/09-next-phase-security.md) — 🔐 แผน phase ถัดไป: admin login + จัดการลิงก์กรรมการ
+- [`docs/10-aws-architecture.md`](docs/10-aws-architecture.md) — 🏗️ สถาปัตยกรรม AWS (ECS Fargate + EFS) + design decisions + trade-off
+- [`docs/11-aws-cost-inputs.md`](docs/11-aws-cost-inputs.md) — 💰 ข้อมูลประกอบการทำ cost สำหรับ Presale (Bill of Materials + usage pattern)
 
 ## 🧰 Tech Stack
 
